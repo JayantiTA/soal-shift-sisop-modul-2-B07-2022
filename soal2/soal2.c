@@ -23,12 +23,12 @@ int main() {
     int status2;
     
     if (child_id_2 == 0) {
-        char *argv[] = {"mkdir", "-p", path, NULL};
-        execv("/bin/mkdir", argv);
+      char *argv[] = {"mkdir", "-p", path, NULL};
+      execv("/bin/mkdir", argv);
     } else {
-        while ((wait(&status2)) > 0);
-        char *argv[] = {"unzip", path_zip, "-d", path, "-x", "*/*", NULL};
-        execv("/usr/bin/unzip", argv);
+      while ((wait(&status2)) > 0);
+      char *argv[] = {"unzip", path_zip, "-d", path, "-x", "*/*", NULL};
+      execv("/usr/bin/unzip", argv);
     }
   } else {
     while ((wait(&status1)) > 0);

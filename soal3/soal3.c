@@ -21,16 +21,12 @@ struct Animal {
 
 char *path1 = "/home/oem/modul2/darat/";
 char *path2 = "/home/oem/modul2/air/";
-// char *path_txt = "/home/oem/modul2/air/list.txt";
 char *path_extract = "/home/oem/modul2/animal/";
 
 char *path_zip = "/home/oem/Downloads/animal.zip";
 
-char content[100][100];
-
 void move_or_remove(struct Animal animal, bool max);
 void to_list(struct Animal animal);
-void readFile(FILE * fPtr);
 
 int main() {
   struct Animal animals[100];
@@ -49,7 +45,7 @@ int main() {
       execv("/bin/mkdir", argv);
     } else {
       while ((wait(&status2)) > 0);
-      // sleep(3);
+      sleep(3);
       char *argv[] = {"mkdir", "-p", path2, NULL};
       execv("/bin/mkdir", argv);
     }
@@ -81,7 +77,6 @@ int main() {
         int underscore = 0;
         int index = 0;
         int name_count = 0;
-        bool dot = false;
         strcpy(animals[i].filename, file_name[i]);
         char temp[100], category[100], name[10][100];
         if (i == count - 1) max = true;
@@ -125,12 +120,9 @@ int main() {
           }
         }
         move_or_remove(animals[i], max);
-        // to_list(animals[i]);
       }
     }
-
   }
-
   return 0;
 }
 
@@ -144,7 +136,6 @@ void move_or_remove(struct Animal animal, bool max) {
   child_id_1 = fork();
 
   if (child_id_1 == 0) {
-
     if (animal.is_bird) {
       char *argv[] = {"rm", filepath, NULL};
       execv("/bin/rm", argv);
@@ -155,21 +146,11 @@ void move_or_remove(struct Animal animal, bool max) {
       char *argv[] = {"mv", filepath, newpath, NULL};
       execv("/bin/mv", argv);
     } else if (strcmp(animal.habitat, "air") == 0) {
-      pid_t child_id_2;
-      int status2;
       strcpy(newpath, path2);
       strcat(newpath, animal.name);
       strcat(newpath, ".jpg");
-      // child_id_2 = fork();
-
-      // if (child_id_2 == 0) {
-        char *argv[] = {"mv", filepath, newpath, NULL};
-        execv("/bin/mv", argv);
-      // } else {
-      //   while((wait(&status2)) > 0);
-      //   to_list(animal);
-      //   return;
-      // }
+      char *argv[] = {"mv", filepath, newpath, NULL};
+      execv("/bin/mv", argv);
     } else {
       char *argv[] = {"rm", filepath, NULL};
       execv("/bin/rm", argv);
@@ -187,9 +168,9 @@ void move_or_remove(struct Animal animal, bool max) {
   }
 }
 
-FILE *fileptr;
 
 void to_list(struct Animal animal) {
+  FILE *fileptr;
   char path_txt[100];
   struct stat info;
   char path[100];
@@ -202,7 +183,7 @@ void to_list(struct Animal animal) {
 
   strcpy(path_txt, path);
   strcat(path_txt, "list.txt");
-  fileptr = fopen(path_txt, "w");
+  fileptr = fopen(path_txt, "a");
 
   if (fileptr == NULL)
   {
@@ -231,26 +212,7 @@ void to_list(struct Animal animal) {
   strcat(text, "_");
   strcat(text, filename);
 
-  printf("%s\n", text);
-
-  fputs(text, fileptr);
-  fflush(fileptr);
-
-  fileptr = freopen(path_txt, "r", fileptr);
-  readFile(fileptr);
+  fprintf(fileptr, "%s\n", text);
 
   fclose(fileptr);
-}
-
-void readFile(FILE * fPtr)
-{
-    char ch;
-
-    do 
-    {
-        ch = fgetc(fPtr);
-
-        putchar(ch);
-
-    } while (ch != EOF);
 }

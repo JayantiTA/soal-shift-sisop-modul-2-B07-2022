@@ -84,7 +84,6 @@ int main() {
       for (int k = 0; k < title_count; ++k) {
         if (k == title_count - 1) max = true;
         move_to_folder(file_name[i], max, title[k], category);
-        strcpy(title[i], "");
       }
     }
   }

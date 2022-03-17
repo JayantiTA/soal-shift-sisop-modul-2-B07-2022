@@ -47,7 +47,6 @@ int main() {
     DIR *dir_path;
     struct dirent *dir;
     int count = 0;
-    int counter = 0;
     int title_count = 0;
     char file_name[100][100];
     dir_path = opendir(path);
@@ -67,15 +66,17 @@ int main() {
 
       for (int j = 0; j < strlen(file_name[i]); ++j) {
         if (file_name[i][j] == '_' || file_name[i][j] == '.') {
-          strcpy(drakor[title_count].raw_title, file_name[i]);
           temp[index] = '\0';
           index = 0;
           semicolon = 0;
-          if (file_name[i][j] == '_') ++underscore;
+          strcpy(drakor[title_count].raw_title, file_name[i]);
           strcpy(drakor[title_count].category, temp);
+
+          if (file_name[i][j] == '_') ++underscore;
           if (file_name[i][j] == '.') {
-            if (underscore == 0) drakor[title_count].max = true;
-            else {
+            if (underscore == 0) {
+              drakor[title_count].max = true;
+            } else {
               if (strcmp(drakor[title_count].category, drakor[title_count-1].category) > 0)
                 drakor[title_count].max = true;
               else 
@@ -171,8 +172,7 @@ void move_to_folder(struct Drakor drakor, bool is_first) {
         char *argv[] = {"mv", oldfile, newfile, NULL};
         execv("/bin/mv", argv);
         exit(0);
-      } 
-      else {
+      } else {
         char *argv[] = {"cp", oldfile, newfile, NULL};
         execv("/bin/cp", argv);
         exit(0);

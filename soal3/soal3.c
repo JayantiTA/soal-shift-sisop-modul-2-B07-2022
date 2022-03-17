@@ -20,7 +20,6 @@ struct Animal {
 char *path1 = "/home/oem/modul2/darat/";
 char *path2 = "/home/oem/modul2/air/";
 char *path_extract = "/home/oem/modul2/animal/";
-
 char *path_zip = "/home/oem/Downloads/animal.zip";
 
 void move_or_remove(struct Animal animal, bool max);

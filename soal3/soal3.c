@@ -10,8 +10,6 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 
-#define DATA_SIZE 1000
-
 struct Animal {
   char filename[100];
   char name[100];
@@ -127,12 +125,14 @@ int main() {
 }
 
 void move_or_remove(struct Animal animal, bool max) {
+  char newpath[100];
   char filepath[100];
   strcpy(filepath, path_extract);
   strcat(filepath, animal.filename);
-  char newpath[100];
+  
   pid_t child_id_1;
   int status;
+
   child_id_1 = fork();
 
   if (child_id_1 == 0) {
@@ -168,19 +168,16 @@ void move_or_remove(struct Animal animal, bool max) {
   }
 }
 
-
 void to_list(struct Animal animal) {
-  FILE *fileptr;
-  char path_txt[100];
-  struct stat info;
-  char path[100];
   char filename[100];
-
   strcpy(filename, animal.name);
   strcat(filename, ".jpg");
 
+  char path[100];
   strcpy(path, path2);
 
+  FILE *fileptr;
+  char path_txt[100];
   strcpy(path_txt, path);
   strcat(path_txt, "list.txt");
   fileptr = fopen(path_txt, "a");
@@ -193,7 +190,7 @@ void to_list(struct Animal animal) {
 
   strcat(path, filename);
 
-  char text[100];
+  struct stat info;
   int r;
 
   r = stat(path, &info);
@@ -204,6 +201,8 @@ void to_list(struct Animal animal) {
   }
 
   struct passwd *pw = getpwuid(info.st_uid);
+
+  char text[100];
   if (pw != 0) strcpy(text, pw->pw_name);
   strcat(text, "_");
   if (info.st_mode & S_IRUSR) strcat(text, "r");

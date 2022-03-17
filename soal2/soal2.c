@@ -102,8 +102,8 @@ int main() {
     bool max = false;
     qsort(drakor, title_count, sizeof(struct Drakor), compare_by_category);
     for (int i = 0; i < title_count; ++i) {
-      if (i == title_count - 1 || (i < title_count - 1 && 
-        strcmp(drakor[i].category, drakor[i+1].category) < 0)) max = true;
+      if (i == 0 || (i > 0 && 
+        strcmp(drakor[i].category, drakor[i-1].category) > 0)) max = true;
       move_to_folder(drakor[i], max);
       max = false;
     }
@@ -117,7 +117,7 @@ int compare_by_category(const void *drakor1, const void *drakor2)
   struct Drakor *d2 = (struct Drakor *)drakor2;
   int category_compare = strcmp(d2->category, d1->category);
   if (category_compare == 0) {
-    return d2->year - d1->year;
+    return d1->year - d2->year;
   } else {
     return -category_compare;
   }
@@ -151,6 +151,7 @@ void move_to_folder(struct Drakor drakor, bool max) {
       fprintf(fileptr, "kategori: %s\n", drakor.category);
     }
     fprintf(fileptr, "\nnama: %s\nrilis: tahun %d\n", drakor.title, drakor.year);
+    fclose(fileptr);
 
     char oldfile[100];
     strcpy(oldfile, path);

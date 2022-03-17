@@ -19,7 +19,7 @@ struct Drakor {
 char *path = "/home/oem/shift2/drakor";
 
 int compare_by_category(const void *drakor1, const void *drakor2);
-void move_to_folder(struct Drakor drakor, bool max);
+void move_to_folder(struct Drakor drakor, bool is_first);
 
 int main() {
   struct Drakor drakor[100];
@@ -99,13 +99,13 @@ int main() {
         }
       }
     }
-    bool max = false;
+    bool is_first = false;
     qsort(drakor, title_count, sizeof(struct Drakor), compare_by_category);
     for (int i = 0; i < title_count; ++i) {
       if (i == 0 || (i > 0 && 
-        strcmp(drakor[i].category, drakor[i-1].category) > 0)) max = true;
-      move_to_folder(drakor[i], max);
-      max = false;
+        strcmp(drakor[i].category, drakor[i-1].category) > 0)) is_first = true;
+      move_to_folder(drakor[i], is_first);
+      is_first = false;
     }
   }
   return 0;
@@ -123,7 +123,7 @@ int compare_by_category(const void *drakor1, const void *drakor2)
   }
 }
 
-void move_to_folder(struct Drakor drakor, bool max) {
+void move_to_folder(struct Drakor drakor, bool is_first) {
   char dest_path[100];
   strcpy(dest_path, path);
   strcat(dest_path, "/");
@@ -147,7 +147,7 @@ void move_to_folder(struct Drakor drakor, bool max) {
     while ((wait(&status1)) > 0);
     
     fileptr = fopen(path_txt, "a");
-    if (max) {
+    if (is_first) {
       fprintf(fileptr, "kategori: %s\n", drakor.category);
     }
     fprintf(fileptr, "\nnama: %s\nrilis: tahun %d\n", drakor.title, drakor.year);

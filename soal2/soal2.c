@@ -7,11 +7,22 @@
 #include <dirent.h>
 #include <stdbool.h>
 
+struct Drakor {
+  char raw_title[100];
+  char title[100];
+  char year[10];
+  char category[30];
+  bool max;
+};
+
 char *path = "/home/oem/shift2/drakor";
 
-void move_to_folder(char file_name[], bool max, char title[], char category[]);
+void move_to_folder(struct Drakor drakor);
+void to_list(struct Drakor drakor[], int counter);
 
 int main() {
+  struct Drakor drakor[100];
+
   pid_t child_id_1, child_id_2;
   char *path_zip = "/home/oem/Downloads/drakor.zip";
 
@@ -37,6 +48,7 @@ int main() {
     int count = 0;
     char file_name[100][100];
     dir_path = opendir(path);
+    int counter = 0;
 
     while ((dir = readdir(dir_path))) {
       if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0) {
@@ -45,61 +57,85 @@ int main() {
       }
     }
 
+    char title[10][100];
     for (int i = 0; i < count; ++i) {
       int semicolon = 0;
-      int index = 0;
+      int underscore = 0;
+      int index = 0, idx = 0;
       int title_count = 0;
-      bool dot = false;
-      char temp[100], title[10][100], category[100];
+      char temp[100], temp2[100];
 
       for (int j = 0; j < strlen(file_name[i]); ++j) {
-        if (file_name[i][j] == ';') {
+        if (file_name[i][j] == '_') {
           temp[index] = '\0';
+          strcpy(title[underscore], temp);
           index = 0;
-          if (semicolon % 2 == 0) {
-            strcpy(title[title_count], temp);
-            ++title_count;
-          }
-          ++semicolon;
-        } else if (j == strlen(file_name[i]) - 4 || file_name[i][j] == '.') {
-          if (file_name[i][j] == '.') dot = true;
+          ++underscore;
+        } else if (j == strlen(file_name[i]) - 4 && file_name[i][j] == '.') {
           temp[index] = '\0';
+          strcpy(title[underscore], temp);
           index = 0;
-          if (dot) {
-            strcpy(category, temp);
-            strcat(category, "/");
-            index = 0; 
-            semicolon = 0;
-            dot = false;
-            continue;
-          } else {
-            break;
-          }
+          break;
         } else {
           temp[index] = file_name[i][j];
           ++index;
         }
       }
-      bool max = false;
-      for (int k = 0; k < title_count; ++k) {
-        if (k == title_count - 1) max = true;
-        move_to_folder(file_name[i], max, title[k], category);
+      for (int k = 0; k <= underscore; ++k) {
+        // printf("%s\n", title[k]);
+        // printf("tes\n");
+        strcpy(drakor[counter].raw_title, file_name[i]);
+        if (k == underscore) drakor[counter].max = true;
+        for (int l = 0; l <= strlen(title[k]); ++l) {
+          if (title[k][l] == ';') {
+            temp2[idx] = '\0';
+            // printf("%s\n", temp2);
+            if (semicolon == 0) {
+              strcpy(drakor[counter].title, temp2);
+            } else if (semicolon == 1) {
+              strcpy(drakor[counter].year, temp2);
+              strcpy(temp2, "");
+            }
+            idx = 0;
+            ++semicolon;
+          } else if (l == strlen(title[k])) {
+            temp2[idx] = '\0';
+            idx = 0;
+            strcpy(drakor[counter].category, temp2);
+            semicolon = 0;
+            ++counter;
+            break;
+          } else {
+            temp2[idx] = title[k][l];
+            ++idx;
+          }
+        }
       }
     }
+    // for (int m = 0; m < counter; m++) {
+    //   move_to_folder(drakor[m]);
+    // }
+    to_list(drakor, counter);
   }
 
   return 0;
 }
 
-void move_to_folder(char file_name[], bool max, char title[], char category[]) {
-  pid_t child_id_1;
-  int status1;
-  child_id_1 = fork();
+void to_list(struct Drakor drakor[], int counter) {
+  struct Drakor temp;
 
+}
+
+void move_to_folder(struct Drakor drakor) {
   char dest_path[100];
   strcpy(dest_path, path);
   strcat(dest_path, "/");
-  strcat(dest_path, category);
+  strcat(dest_path, drakor.category);
+  strcat(dest_path, "/");
+  pid_t child_id_1;
+  int status1;
+
+  child_id_1 = fork();
 
   if (child_id_1 == 0) {
     char *argv[] = {"mkdir", "-p", dest_path, NULL};
@@ -110,18 +146,19 @@ void move_to_folder(char file_name[], bool max, char title[], char category[]) {
     char oldfile[100];
     strcpy(oldfile, path);
     strcat(oldfile, "/");
-    strcat(oldfile, file_name);
+    strcat(oldfile, drakor.raw_title);
 
     char newfile[100];
     strcpy(newfile, dest_path);
-    strcat(newfile, title);
+    strcat(newfile, drakor.title);
     strcat(newfile, ".png");
+    printf("%s\n", newfile);
 
     pid_t child_id_2;
     int status2;
     child_id_2 = fork();
     if (child_id_2 == 0) {
-      if (max == true) {
+      if (drakor.max) {
         char *argv[] = {"mv", oldfile, newfile, NULL};
         execv("/bin/mv", argv);
         exit(0);
@@ -136,3 +173,4 @@ void move_to_folder(char file_name[], bool max, char title[], char category[]) {
     }
   }
 }
+

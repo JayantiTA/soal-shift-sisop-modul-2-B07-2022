@@ -6,19 +6,20 @@
 #include <string.h>
 #include <dirent.h>
 #include <stdbool.h>
+#include <sys/stat.h>
 
 struct Drakor {
   char raw_title[100];
   char title[100];
-  char year[10];
+  int year;
   char category[30];
   bool max;
 };
 
 char *path = "/home/oem/shift2/drakor";
 
-void move_to_folder(struct Drakor drakor);
-void to_list(struct Drakor drakor[], int counter);
+int compare_by_category(const void *drakor1, const void *drakor2);
+void move_to_folder(struct Drakor drakor, bool max);
 
 int main() {
   struct Drakor drakor[100];
@@ -46,9 +47,10 @@ int main() {
     DIR *dir_path;
     struct dirent *dir;
     int count = 0;
+    int counter = 0;
+    int title_count = 0;
     char file_name[100][100];
     dir_path = opendir(path);
-    int counter = 0;
 
     while ((dir = readdir(dir_path))) {
       if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0) {
@@ -57,81 +59,82 @@ int main() {
       }
     }
 
-    char title[10][100];
     for (int i = 0; i < count; ++i) {
       int semicolon = 0;
       int underscore = 0;
-      int index = 0, idx = 0;
-      int title_count = 0;
-      char temp[100], temp2[100];
+      int index = 0;
+      char temp[100];
 
       for (int j = 0; j < strlen(file_name[i]); ++j) {
-        if (file_name[i][j] == '_') {
+        if (file_name[i][j] == '_' || file_name[i][j] == '.') {
+          strcpy(drakor[title_count].raw_title, file_name[i]);
           temp[index] = '\0';
-          strcpy(title[underscore], temp);
           index = 0;
-          ++underscore;
-        } else if (j == strlen(file_name[i]) - 4 && file_name[i][j] == '.') {
+          semicolon = 0;
+          if (file_name[i][j] == '_') ++underscore;
+          strcpy(drakor[title_count].category, temp);
+          if (file_name[i][j] == '.') {
+            if (underscore == 0) drakor[title_count].max = true;
+            else {
+              if (strcmp(drakor[title_count].category, drakor[title_count-1].category) > 0)
+                drakor[title_count].max = true;
+              else 
+                drakor[title_count-1].max = true;
+            }
+            underscore = 0;
+          }
+          ++title_count;
+        } else if (file_name[i][j] == ';') {
           temp[index] = '\0';
-          strcpy(title[underscore], temp);
           index = 0;
-          break;
+          if (semicolon > 0) {
+            drakor[title_count].year += atoi(temp);
+          } else {
+            strcpy(drakor[title_count].title, temp);
+          }
+          ++semicolon;
         } else {
           temp[index] = file_name[i][j];
           ++index;
         }
       }
-      for (int k = 0; k <= underscore; ++k) {
-        // printf("%s\n", title[k]);
-        // printf("tes\n");
-        strcpy(drakor[counter].raw_title, file_name[i]);
-        if (k == underscore) drakor[counter].max = true;
-        for (int l = 0; l <= strlen(title[k]); ++l) {
-          if (title[k][l] == ';') {
-            temp2[idx] = '\0';
-            // printf("%s\n", temp2);
-            if (semicolon == 0) {
-              strcpy(drakor[counter].title, temp2);
-            } else if (semicolon == 1) {
-              strcpy(drakor[counter].year, temp2);
-              strcpy(temp2, "");
-            }
-            idx = 0;
-            ++semicolon;
-          } else if (l == strlen(title[k])) {
-            temp2[idx] = '\0';
-            idx = 0;
-            strcpy(drakor[counter].category, temp2);
-            semicolon = 0;
-            ++counter;
-            break;
-          } else {
-            temp2[idx] = title[k][l];
-            ++idx;
-          }
-        }
-      }
     }
-    // for (int m = 0; m < counter; m++) {
-    //   move_to_folder(drakor[m]);
-    // }
-    to_list(drakor, counter);
+    bool max = false;
+    qsort(drakor, title_count, sizeof(struct Drakor), compare_by_category);
+    for (int i = 0; i < title_count; ++i) {
+      if (i == title_count - 1 || (i < title_count - 1 && 
+        strcmp(drakor[i].category, drakor[i+1].category) < 0)) max = true;
+      move_to_folder(drakor[i], max);
+      max = false;
+    }
   }
-
   return 0;
 }
 
-void to_list(struct Drakor drakor[], int counter) {
-  struct Drakor temp;
-
+int compare_by_category(const void *drakor1, const void *drakor2)
+{
+  struct Drakor *d1 = (struct Drakor *)drakor1;
+  struct Drakor *d2 = (struct Drakor *)drakor2;
+  int category_compare = strcmp(d2->category, d1->category);
+  if (category_compare == 0) {
+    return d2->year - d1->year;
+  } else {
+    return -category_compare;
+  }
 }
 
-void move_to_folder(struct Drakor drakor) {
+void move_to_folder(struct Drakor drakor, bool max) {
   char dest_path[100];
   strcpy(dest_path, path);
   strcat(dest_path, "/");
   strcat(dest_path, drakor.category);
   strcat(dest_path, "/");
+
+  FILE *fileptr;
+  char path_txt[100];
+  strcpy(path_txt, dest_path);
+  strcat(path_txt, "data.txt");
+
   pid_t child_id_1;
   int status1;
 
@@ -142,6 +145,12 @@ void move_to_folder(struct Drakor drakor) {
     execv("/bin/mkdir", argv);
   } else {
     while ((wait(&status1)) > 0);
+    
+    fileptr = fopen(path_txt, "a");
+    if (max) {
+      fprintf(fileptr, "kategori: %s\n", drakor.category);
+    }
+    fprintf(fileptr, "\nnama: %s\nrilis: tahun %d\n", drakor.title, drakor.year);
 
     char oldfile[100];
     strcpy(oldfile, path);
@@ -152,7 +161,6 @@ void move_to_folder(struct Drakor drakor) {
     strcpy(newfile, dest_path);
     strcat(newfile, drakor.title);
     strcat(newfile, ".png");
-    printf("%s\n", newfile);
 
     pid_t child_id_2;
     int status2;
@@ -173,4 +181,3 @@ void move_to_folder(struct Drakor drakor) {
     }
   }
 }
-

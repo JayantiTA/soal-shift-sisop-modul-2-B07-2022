@@ -17,6 +17,7 @@ struct Drakor {
 };
 
 char *path = "/home/oem/shift2/drakor";
+char *path_zip = "/home/oem/Downloads/drakor.zip";
 
 int compare_by_category(const void *drakor1, const void *drakor2);
 void move_to_folder(struct Drakor drakor, bool is_first);
@@ -25,7 +26,6 @@ int main() {
   struct Drakor drakor[100];
 
   pid_t child_id_1, child_id_2;
-  char *path_zip = "/home/oem/Downloads/drakor.zip";
 
   child_id_1 = fork();
   int status1;
@@ -89,7 +89,7 @@ int main() {
           temp[index] = '\0';
           index = 0;
           if (semicolon > 0) {
-            drakor[title_count].year += atoi(temp);
+            drakor[title_count].year = atoi(temp);
           } else {
             strcpy(drakor[title_count].title, temp);
           }
@@ -112,8 +112,7 @@ int main() {
   return 0;
 }
 
-int compare_by_category(const void *drakor1, const void *drakor2)
-{
+int compare_by_category(const void *drakor1, const void *drakor2) {
   struct Drakor *d1 = (struct Drakor *)drakor1;
   struct Drakor *d2 = (struct Drakor *)drakor2;
   int category_compare = strcmp(d2->category, d1->category);

@@ -12,7 +12,6 @@
 
 struct Animal {
   char filename[100];
-  char name[100];
   char habitat[100];
   bool is_bird;
 };
@@ -79,38 +78,19 @@ int main() {
         if (i == count - 1) max = true;
 
         for (int j = 0; j < strlen(file_name[i]); ++j) {
-          if (file_name[i][j] == '_') {
+          if (file_name[i][j] == '_' || (j == strlen(file_name[i]) - 4 && file_name[i][j] == '.')) {
             temp[index] = '\0';
             index = 0;
             if (strcmp(temp, "darat") == 0) {
               strcpy(animals[i].habitat, "darat");
             } else if (strcmp(temp, "air") == 0) {
               strcpy(animals[i].habitat, "air");
-            } else {
-              if (name_count > 0) strcat(animals[i].name, "_");
-              strcat(animals[i].name, temp);
-              ++name_count;
-            }
+            } 
+
             if (strcmp(temp, "bird") == 0) {
               animals[i].is_bird = true;
             }
             ++underscore;
-          } else if (j == strlen(file_name[i]) - 4 && file_name[i][j] == '.') {
-            temp[index] = '\0';
-            index = 0;
-            underscore = 0;
-            if (strcmp(temp, "darat") == 0) {
-              strcpy(animals[i].habitat, "darat");
-            } else if (strcmp(temp, "air") == 0) {
-              strcpy(animals[i].habitat, "air");
-            } else {
-              if (name_count > 0) strcat(animals[i].name, "_");
-              strcat(animals[i].name, temp);
-            }
-            if (strcmp(temp, "bird") == 0) {
-              animals[i].is_bird = true;
-            }
-            break;
           } else {
             temp[index] = file_name[i][j];
             ++index;
@@ -140,14 +120,12 @@ void move_or_remove(struct Animal animal, bool max) {
       execv("/bin/rm", argv);
     } else if (strcmp(animal.habitat, "darat") == 0) {
       strcpy(newpath, path1);
-      strcat(newpath, animal.name);
-      strcat(newpath, ".jpg");
+      strcat(newpath, animal.filename);
       char *argv[] = {"mv", filepath, newpath, NULL};
       execv("/bin/mv", argv);
     } else if (strcmp(animal.habitat, "air") == 0) {
       strcpy(newpath, path2);
-      strcat(newpath, animal.name);
-      strcat(newpath, ".jpg");
+      strcat(newpath, animal.filename);
       char *argv[] = {"mv", filepath, newpath, NULL};
       execv("/bin/mv", argv);
     } else {
@@ -169,8 +147,7 @@ void move_or_remove(struct Animal animal, bool max) {
 
 void to_list(struct Animal animal) {
   char filename[100];
-  strcpy(filename, animal.name);
-  strcat(filename, ".jpg");
+  strcpy(filename, animal.filename);
 
   char path[100];
   strcpy(path, path2);

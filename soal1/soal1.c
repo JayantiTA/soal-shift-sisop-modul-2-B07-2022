@@ -185,6 +185,7 @@ void clearGachaGachaDirectory()
 			}
 		}
 	}
+	exit(EXIT_SUCCESS);
 }
 
 int main()

@@ -972,5 +972,213 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
 **Dokumentasi Pengerjaan dan Rintangan**
 
 ## Nomor 3
+Soal nomer 3 terkait dengan hewan-hewan di kebun binatang
 
+- Seperti program C pada umumnya, di awal program terdapat library-library yang digunakan.
+- Terdapat `struct Animal` yang berisi nama file, habitat, dan `boolean is_bird`.
+- Terdapat juga variabel global untuk menyimpan path folder dan file zip, serta deklarasi fungsi yang akan digunakan.
+
+```C++
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <grp.h>
+#include <stdio.h>
+#include <wait.h>
+#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <stdbool.h>
+
+struct Animal {
+  char filename[100];
+  char habitat[100];
+  bool is_bird;
+};
+
+char *path1 = "/home/oem/modul2/darat/";
+char *path2 = "/home/oem/modul2/air/";
+char *path_extract = "/home/oem/modul2/animal/";
+char *path_zip = "/home/oem/Downloads/animal.zip";
+
+void move_or_remove(struct Animal animal, bool max);
+void to_list(struct Animal animal);
+...
+```
+1. Masuk ke dalam soal 3a, diminta membuat program untuk membuat 2 directory di `/home/[USER]/modul2` dengan nama `darat` lalu 3 detik kemudian membuat directory ke-2 dengan nama `air`
+- Melakukan `fork()` *process*, kemudian karena akan terdapat 2 *process*, maka dilakukan `fork()` lagi. Sehingga untuk *child process* adalah membuat direktori.
+
+```C++
+...
+child_id_1 = fork();
+
+  if (child_id_1 == 0) {
+    child_id_2 = fork();
+    int status2;
+    
+    if (child_id_2 == 0) {
+      char *argv[] = {"mkdir", "-p", path1, NULL};
+      execv("/bin/mkdir", argv);
+    } else {
+      while ((wait(&status2)) > 0);
+      sleep(3);
+      char *argv[] = {"mkdir", "-p", path2, NULL};
+      execv("/bin/mkdir", argv);
+    }
+  }
+  ...
+  ```
+ 2. Masuk ke dalam soal 3b, program diminta untuk melakukan extract pada `animal.zip`
+  - Membuat `fork()` *process* untuk melakukan extract file `animal.zip`
+  ```C++
+  ...
+  else {
+    while ((wait(&status1)) > 0);
+    child_id_3 = fork();
+    int status3;
+
+    if (child_id_3 == 0) {
+      char *argv[] = {"unzip", path_zip, "-d", "/home/oem/modul2", NULL};
+      execv("/usr/bin/unzip", argv);
+    }
+    ...
+    ```
+3. Masuk ke dalam soal 3c, setelah file di extract hasil extract dipisah menjadi hewan `darat` dan `air`. Dilakukan pengelompokkan hewan berdasarkan habitatnya, dimana untuk hewan darat akan masuk ke dalam filepath `darat` dan untuk hewan air akan masuk ke dalam filepath `air`. Rentang pembuatan filepath antara filepath `darat` dengan filepath `air` adalah 3 detik dimana filepath `darat` dibuat terlebih dahulu.
+- Melakukan pemisahan data dari hasil extract dengan menggunakan `underscore` dan `titik`, untuk memfilter data berdasarkan habitatnya yaitu `air` atau `darat`.
+- Melakukan penghapusan hewan yang tidak termasuk dalam hewan `darat` dan hewan `air`
+```C++
+...
+  for (int i = 0; i < count; ++i) {
+        int underscore = 0;
+        int index = 0;
+        int name_count = 0;
+        strcpy(animals[i].filename, file_name[i]);
+        char temp[100], category[100], name[10][100];
+        if (i == count - 1) max = true;
+
+        for (int j = 0; j < strlen(file_name[i]); ++j) {
+          if (file_name[i][j] == '_' || (j == strlen(file_name[i]) - 4 && file_name[i][j] == '.')) {
+            temp[index] = '\0';
+            index = 0;
+            if (strcmp(temp, "darat") == 0) {
+              strcpy(animals[i].habitat, "darat");
+            } else if (strcmp(temp, "air") == 0) {
+              strcpy(animals[i].habitat, "air");
+            } 
+
+            if (strcmp(temp, "bird") == 0) {
+              animals[i].is_bird = true;
+            }
+            ++underscore;
+          } else {
+            temp[index] = file_name[i][j];
+            ++index;
+          }
+        }
+  ...
+  ```
+4. Masuk ke dalam soal 3d, setelah berhasil memisahkan hewan `darat` dan hewan `air`. Kemudian akan
+melakukan penghapusan hewan `is_bird` pada direktori `darat` karena jumlahnya yang terlalu banyak.
+- Menggunakan fungsi `move-or_remove` untuk memindahkan file dan menghapus file yang tidak dibutuhkan.
+```C++
+...
+void move_or_remove(struct Animal animal, bool max) {
+  char newpath[100];
+  char filepath[100];
+  strcpy(filepath, path_extract);
+  strcat(filepath, animal.filename);
+  
+  pid_t child_id_1;
+  int status;
+
+  child_id_1 = fork();
+
+  if (child_id_1 == 0) {
+    if (animal.is_bird) {
+      char *argv[] = {"rm", filepath, NULL};
+      execv("/bin/rm", argv);
+    } else if (strcmp(animal.habitat, "darat") == 0) {
+      strcpy(newpath, path1);
+      strcat(newpath, animal.filename);
+      char *argv[] = {"mv", filepath, newpath, NULL};
+      execv("/bin/mv", argv);
+    } else if (strcmp(animal.habitat, "air") == 0) {
+      strcpy(newpath, path2);
+      strcat(newpath, animal.filename);
+      char *argv[] = {"mv", filepath, newpath, NULL};
+      execv("/bin/mv", argv);
+    } else {
+      char *argv[] = {"rm", filepath, NULL};
+      execv("/bin/rm", argv);
+    }
+  } else {
+    while((wait(&status)) > 0);
+    if (strcmp(animal.habitat, "air") == 0) {
+      to_list(animal);
+    }
+  ...
+  ```
+  - Melakukan penghapusan pada file animal
+  ```
+  if (max) {
+      char *argv[] = {"rm", "-rf", path_extract, NULL};
+      execv("/bin/rm", argv);
+    }
+    return;
+  }
+  ```
+5. Masuk ke dalam soal 3e, program diminta untuk membuat `list.txt` pada folder `/home/[USER]/modul2/air` dan membuat list nama semua hewan yang ada pada direktori `/home/[USER]/modul2/air` ke dalam `list.txt`
+- Menggunakan fungsi `to_list` untuk membuat list hewan hewan
+```C++
+...
+void to_list(struct Animal animal) {
+  char filename[100];
+  strcpy(filename, animal.filename);
+
+  char path[100];
+  strcpy(path, path2);
+
+  FILE *fileptr;
+  char path_txt[100];
+  strcpy(path_txt, path);
+  strcat(path_txt, "list.txt");
+  fileptr = fopen(path_txt, "a");
+
+  if (fileptr == NULL)
+  {
+    printf("Unable to create file.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  strcat(path, filename);
+
+  struct stat info;
+  int r;
+
+  r = stat(path, &info);
+  if (r == -1)
+  {
+    fprintf(stderr,"File error\n");
+    exit(1);
+  }
+  ...
+  ```
+  - Membuat akses untuk UID File Permission
+  ```
+    struct passwd *pw = getpwuid(info.st_uid);
+
+    char text[100];
+  if (pw != 0) strcpy(text, pw->pw_name);
+  strcat(text, "_");
+  if (info.st_mode & S_IRUSR) strcat(text, "r");
+  if (info.st_mode & S_IWUSR) strcat(text, "w");
+  if (info.st_mode & S_IXUSR) strcat(text, "x");
+  strcat(text, "_");
+  strcat(text, filename);
+
+  fprintf(fileptr, "%s\n", text);
+
+  fclose(fileptr);
+```
 **Dokumentasi Pengerjaan dan Rintangan**

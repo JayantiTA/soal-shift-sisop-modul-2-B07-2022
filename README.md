@@ -766,6 +766,12 @@ waktu sistem memenuhi rentang waktu proses gacha.
 
 **Dokumentasi Pengerjaan dan Rintangan**
 
+![dokumentasi_nomor_1_1](images/pengerjaan 1.png)
+![dokumentasi_nomor_1_2](images/pengerjaan 4.png)
+![dokumentasi_nomor_1_3](images/pengerjaan 7.png)
+![dokumentasi_nomor_1_4](images/pengerjaan 10.png)
+![dokumentasi_nomor_1_5](images/pengerjaan 11.png)
+
 Rintangan yang dihadapi adalah cara mengunduh file dari Google Drive menggunakan wget, kemudian cara mengganti nama file dan folder gacha setiap kali terjadi penambahan gacha, kemudian zip folder-folder gacha, juga terjadi process leak karena proses menghapus folder-folder gacha namun semua rintangan berhasil diselesaikan.
 
 ## Nomor 2

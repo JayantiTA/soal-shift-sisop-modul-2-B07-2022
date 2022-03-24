@@ -971,8 +971,8 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
 
 **Dokumentasi Pengerjaan dan Rintangan**
 
-![dokumentasi_nomor_2_1](images/pengerjaan no 2.png)
-![dokumentasi_nomor_2_2](images/pengerjaan no 2 (1).png)
+![dokumentasi_nomor_2_1](images/pengerjaan_2_1.png)
+![dokumentasi_nomor_2_2](images/pengerjaan_2_2.png)
 
 Rintangan yang sempat dihadapi adalah ketidaktelitian dalam membaca soal, sehingga menimbulkan kesalahpahaman saat memisahkan string. Selain itu, kami juga belum begitu memahami fungsi `strtok` sehingga dalam memisahkan string dilakukan looping karakter satu per satu. Rintangan selanjutnya adalah dalam mengurutkan tahun rilis pada file `data.txt`, sehingga kami menggunakan fungsi `qsort` dari bahasa C. Serta sempat mengalami kebingungan saat menambahkan kategori yang diletakkan paling atas pada file `data.txt`. Solusi kami untuk mengatasi semua permasalahan tersebut adalah membuat struct dari setiap judul drakor dengan atribut-atribut yang diperlukan.
 
@@ -1188,8 +1188,8 @@ void to_list(struct Animal animal) {
 ```
 **Dokumentasi Pengerjaan dan Rintangan**
 
-![dokumentasi_nomor_3_1](images/pengerjaan no 3.png)
-![dokumentasi_nomor_3_1](images/pengerjaan no 3 (1).png)
+![dokumentasi_nomor_3_1](images/pengerjaan_3_1.png)
+![dokumentasi_nomor_3_1](images/pengerjaan_3_2.png)
 
 
 Rintangan yang sempat kami hadapi adalah kebingungan dalam membaca pola nama file untuk mengidentifikasi nama hewan serta habitat dan jenisnya. Pada akhirnya kami melakukan looping karakter satu per satu kemudian menyimpan nama file, habitat, dan apakah hewan tersebut termasuk burung atau bukan ke dalam struct. Rintangan selanjutnya adalah ketika kami masih belum terlalu memahami dalam mengakses UID dan jenis akses dari user. Kemudian kami membaca kembali modul 2 dan menemukan penjelasan terkait file ownership dan file permission.

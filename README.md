@@ -11,7 +11,7 @@ Anggota:
 
 ## Nomor 1
 
-```bash
+```c++
 int getTotalDatabase(char *database)
 {
 	int result = -1;
@@ -41,7 +41,7 @@ int getTotalDatabase(char *database)
 
 Fungsi getTotalDatabase untuk mendapatkan jumlah file database yang berada di directory database.
 
-```bash
+```c++
 void getFileNameInDatabase(char **arrayDatabase, char *database)
 {
 	DIR *databaseDirectory = opendir(database);
@@ -67,7 +67,7 @@ void getFileNameInDatabase(char **arrayDatabase, char *database)
 
 Fungsi getFileNameInDatabase untuk menyimpan semua nama file yang ada di directory database ke dalam array string.
 
-```bash
+```c++
 char **allocateArrayForDatabase(int arraySize, int bufferSize)
 {
 	char **array;
@@ -85,7 +85,7 @@ char **allocateArrayForDatabase(int arraySize, int bufferSize)
 
 Fungsi allocateArrayForDatabase untuk mengalokasikan memori untuk array string
 
-```bash
+```c++
 void deallocateArrayOfDatabase(char **arrayDatabase)
 {
 	int length = sizeof(arrayDatabase) / sizeof(arrayDatabase[0]);
@@ -100,7 +100,7 @@ void deallocateArrayOfDatabase(char **arrayDatabase)
 
 Fungsi deallocateArrayOfDatabase untuk mengdealokasikan memori sebuah array string.
 
-```bash
+```c++
 void zipGachaFile()
 {
 	if(chdir("gacha_gacha") < 0)
@@ -160,7 +160,7 @@ void zipGachaFile()
 
 Fungsi zipGachaFile untuk zip semua file hasil gacha yang disimpan di dalam directory gacha_gacha dengan password "satuduatiga".
 
-```bash
+```c++
 void clearGachaGachaDirectory()
 {
 	if(chdir("gacha_gacha") < 0)
@@ -206,7 +206,7 @@ Fungsi clearGachaGachaDirectory untuk menghapus semua file hasil gacha yang terd
 
 ### fungsi main ###
 
-```bash
+```c++
 pid_t pidDaemonProcess = 0, sidDaemonProcess;
 	
 pidDaemonProcess = fork();
@@ -238,7 +238,7 @@ close(STDERR_FILENO);
 
 Membuat daemon terlebih dahulu
 
-```bash
+```c++
 pid_t pidDownloadDatabaseCharacter = 0;
 	
 pidDownloadDatabaseCharacter = fork();
@@ -354,7 +354,7 @@ if (pidDownloadDatabaseCharacter == 0)
 
 Kemudian membuat proses-proses untuk mengunduh file database dari link Google Drive yang disediakan dengan wget dan di unzip setelahnya
 
-```bash
+```c++
 int status;
 while(wait(&status) > 0);
 
@@ -380,7 +380,7 @@ if (pidCreateGachaDirectory == 0)
 
 Kemudian membuat proses lagi untuk membuat directory "gacha_gacha"
 
-```bash
+```c++
 time_t currentTime; // mendapatkan waktu dalam second
 struct tm currentLocalTime; // menyimpan data waktu yang telah dibagi menjadi tahun, bulan, hari, jam, menit, detik
 
@@ -398,7 +398,7 @@ Setelah membuat directory "gacha_gacha" barulah masuk pada proses gacha, karena 
 perlu mendapatkan waktu dari sistem dan jam, menit, dan detik dari sistem sekarang, waktu mulai, dan waktu berhenti gacha diubah menjadi satuan detik 
 untuk mempermudah perbandingan. Struct tm currentLocalTime untuk menyimpan waktu sistem dalam tahun, bulan, hari, jam, menit, dan detik 
 
-```bash
+```c++
 currentTime = time(NULL);
 currentLocalTime = *localtime(&currentTime);
 currentHourSecond = currentLocalTime.tm_hour * 3600 + currentLocalTime.tm_min * 60 + currentLocalTime.tm_sec;
@@ -407,7 +407,7 @@ currentHourSecond = currentLocalTime.tm_hour * 3600 + currentLocalTime.tm_min * 
 Variabel yang menyimpan waktu sistem sekarang akan diperbaiki terus menerus kemudian nilainya diubah dan disimpan ke dalam struct tm currentLocalTime
 untuk mempermudah mengambil tahun, bulan, hari, jam, menit, dan detik sistem.
 
-```bash
+```c++
 if (
 	currentLocalTime.tm_mday == 30 && currentLocalTime.tm_mon == 2 && 
 	currentHourSecond >= startHourSecond && currentHourSecond < finishHourSecond
@@ -416,7 +416,7 @@ if (
 
 Bila masuk ke dalam rentang waktu gacha maka proses gacha akan dimulai.
 
-```bash
+```c++
 srand(time(NULL));
 
 int primogems = 79000;
@@ -477,7 +477,7 @@ Ketika akan dimulai random gacha, akan diinisialisasi dahulu variabel-variabel y
 mengambil data-data database weapon dan character yaitu jumlah file database character dan weapon dan menyimpan nama-nama
 file database ke dalam array string.
 
-```bash
+```c++
 while(
 	currentLocalTime.tm_mday == 30 && currentLocalTime.tm_mon == 2 && 
 	currentHourSecond >= startHourSecond && currentHourSecond < finishHourSecond
@@ -486,7 +486,7 @@ while(
 
 Selama masih di dalam rentang waktu gacha, proses akan terus menerus terjebak pada proses pengacakan gacha.
 
-```bash
+```c++
 if (gachaKelipatan10 == 10)
 {
 	if (currentTime > previousTimeFileCreated)
@@ -546,7 +546,7 @@ if (gachaKelipatan10 == 10)
 Jika total gacha kelipatan 10 maka akan membuat file baru dan bila kelipatan 90 maka akan dibuat folder penyimpanan gacha yang baru.
 Tetapi jika belum lewat 1 detik dari file sebelumnya yang dibuat, maka akan ditunggu sampai lewat 1 detik barulah proses ini akan dijalankan.
 
-```bash
+```c++
 if (primogems >= 160)
 {
 	primogems -= 160;
@@ -725,7 +725,7 @@ nama tetapi jumlah file tidak berubah akan merusak sistem gacha.
 Kemudian file database yang diacak akan dibuka dan disimpan datanya ke dalam file gacha, kemudian file gacha dan directory gacha akan diperbarui
 namanya.
 
-```bash
+```c++
 currentTime = time(NULL);
 currentLocalTime = *localtime(&currentTime);
 currentHourSecond = currentLocalTime.tm_hour * 3600 + currentLocalTime.tm_min * 60 + currentLocalTime.tm_sec;
@@ -733,7 +733,7 @@ currentHourSecond = currentLocalTime.tm_hour * 3600 + currentLocalTime.tm_min * 
 
 Setiap kali proses gacha berjalan, data waktu sistem akan diperbarui terus menerus.
 
-```bash
+```c++
 pid_t pidZIPProcess = 0;
 pidZIPProcess = fork();
 
@@ -1188,6 +1188,8 @@ void to_list(struct Animal animal) {
 ```
 **Dokumentasi Pengerjaan dan Rintangan**
 
+![dokumentasi_nomor_3_1](images/pengerjaan no 3.png)
+![dokumentasi_nomor_3_1](images/pengerjaan no 3 (1).png)
 
 
-Rintangan yang sempat kami hadapi adalah kebingungan dalam membaca pola nama file untuk mengidentifikasi nama hewan serta habitat dan jenisnya. Pada akhirnya kami melakukan looping karakter satu per satu kemudian menyimpan nama file, habitat, dan apakah hewan tersebut termasuk burung atau bukan ke dalam struct.
+Rintangan yang sempat kami hadapi adalah kebingungan dalam membaca pola nama file untuk mengidentifikasi nama hewan serta habitat dan jenisnya. Pada akhirnya kami melakukan looping karakter satu per satu kemudian menyimpan nama file, habitat, dan apakah hewan tersebut termasuk burung atau bukan ke dalam struct. Rintangan selanjutnya adalah ketika kami masih belum terlalu memahami dalam mengakses UID dan jenis akses dari user. Kemudian kami membaca kembali modul 2 dan menemukan penjelasan terkait file ownership dan file permission.

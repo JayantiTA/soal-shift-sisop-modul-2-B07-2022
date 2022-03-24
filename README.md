@@ -971,6 +971,11 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
 
 **Dokumentasi Pengerjaan dan Rintangan**
 
+![dokumentasi_nomor_2_1](images/pengerjaan no 2.png)
+![dokumentasi_nomor_2_2](images/pengerjaan no 2 (1).png)
+
+Rintangan yang sempat dihadapi adalah ketidaktelitian dalam membaca soal, sehingga menimbulkan kesalahpahaman saat memisahkan string. Selain itu, kami juga belum begitu memahami fungsi `strtok` sehingga dalam memisahkan string dilakukan looping karakter satu per satu. Rintangan selanjutnya adalah dalam mengurutkan tahun rilis pada file `data.txt`, sehingga kami menggunakan fungsi `qsort` dari bahasa C. Serta sempat mengalami kebingungan saat menambahkan kategori yang diletakkan paling atas pada file `data.txt`. Solusi kami untuk mengatasi semua permasalahan tersebut adalah membuat struct dari setiap judul drakor dengan atribut-atribut yang diperlukan.
+
 ## Nomor 3
 Soal nomer 3 terkait dengan hewan-hewan di kebun binatang
 
@@ -1165,10 +1170,10 @@ void to_list(struct Animal animal) {
   ...
   ```
   - Membuat akses untuk UID File Permission
-  ```
-    struct passwd *pw = getpwuid(info.st_uid);
+  ```c++
+  struct passwd *pw = getpwuid(info.st_uid);
 
-    char text[100];
+  char text[100];
   if (pw != 0) strcpy(text, pw->pw_name);
   strcat(text, "_");
   if (info.st_mode & S_IRUSR) strcat(text, "r");
@@ -1182,3 +1187,7 @@ void to_list(struct Animal animal) {
   fclose(fileptr);
 ```
 **Dokumentasi Pengerjaan dan Rintangan**
+
+
+
+Rintangan yang sempat kami hadapi adalah kebingungan dalam membaca pola nama file untuk mengidentifikasi nama hewan serta habitat dan jenisnya. Pada akhirnya kami melakukan looping karakter satu per satu kemudian menyimpan nama file, habitat, dan apakah hewan tersebut termasuk burung atau bukan ke dalam struct.

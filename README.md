@@ -4,38 +4,37 @@ Repository untuk soal shift sisop modul 2 kelompok B07 tahun 2022
 
 Anggota:
 
-1. Hans Sean Nathanael (5025201019)
-2. Jayanti Totti Andhina (5025201037)
-3. Agnesfia Anggraeni (5025201059)
-
+1. [Hans Sean Nathanael](https://gitlab.com/HansSeanNathanael) (5025201019)
+2. [Jayanti Totti Andhina](https://gitlab.com/JayantiTA) (5025201037)
+3. [Agnesfia Anggraeni](https://gitlab.com/agnesfiaa) (5025201059)
 
 ## Nomor 1
 
 ```c++
 int getTotalDatabase(char *database)
 {
-	int result = -1;
-	DIR *databaseDirectory = opendir(database);
-	
-	if (databaseDirectory != NULL)
-	{
-		struct dirent *fileData;
-		int totalFile = 0;
-		
-		while((fileData = readdir(databaseDirectory)) != NULL)
-		{
-			if (strcmp(fileData->d_name, ".") != 0 && strcmp(fileData->d_name, "..") != 0)
-			{
-				totalFile += 1;
-			}
-		}
-		
-		result = totalFile;
-		
-		closedir(databaseDirectory);
-	}
-	
-	return result;
+  int result = -1;
+  DIR *databaseDirectory = opendir(database);
+  
+  if (databaseDirectory != NULL)
+  {
+    struct dirent *fileData;
+    int totalFile = 0;
+    
+    while((fileData = readdir(databaseDirectory)) != NULL)
+    {
+      if (strcmp(fileData->d_name, ".") != 0 && strcmp(fileData->d_name, "..") != 0)
+      {
+        totalFile += 1;
+      }
+    }
+    
+    result = totalFile;
+    
+    closedir(databaseDirectory);
+  }
+  
+  return result;
 }
 ```
 
@@ -44,24 +43,24 @@ Fungsi getTotalDatabase untuk mendapatkan jumlah file database yang berada di di
 ```c++
 void getFileNameInDatabase(char **arrayDatabase, char *database)
 {
-	DIR *databaseDirectory = opendir(database);
-	
-	if (databaseDirectory != NULL)
-	{
-		struct dirent *fileData;
-		int totalFile = 0;
-		
-		while((fileData = readdir(databaseDirectory)) != NULL)
-		{
-			if (strcmp(fileData->d_name, ".") != 0 && strcmp(fileData->d_name, "..") != 0)
-			{
-				strcpy(arrayDatabase[totalFile], fileData->d_name);
-				totalFile += 1;				
-			}
-		}
-		
-		closedir(databaseDirectory);
-	}
+  DIR *databaseDirectory = opendir(database);
+  
+  if (databaseDirectory != NULL)
+  {
+    struct dirent *fileData;
+    int totalFile = 0;
+    
+    while((fileData = readdir(databaseDirectory)) != NULL)
+    {
+      if (strcmp(fileData->d_name, ".") != 0 && strcmp(fileData->d_name, "..") != 0)
+      {
+        strcpy(arrayDatabase[totalFile], fileData->d_name);
+        totalFile += 1;        
+      }
+    }
+    
+    closedir(databaseDirectory);
+  }
 }
 ```
 
@@ -70,16 +69,16 @@ Fungsi getFileNameInDatabase untuk menyimpan semua nama file yang ada di directo
 ```c++
 char **allocateArrayForDatabase(int arraySize, int bufferSize)
 {
-	char **array;
-	
-	array = (char**)malloc(sizeof(char*) * arraySize);
-	
-	for(int i = 0; i < bufferSize; i++)
-	{
-		array[i] = (char*)malloc(sizeof(char) * bufferSize);
-	}
-	
-	return array;
+  char **array;
+  
+  array = (char**)malloc(sizeof(char*) * arraySize);
+  
+  for(int i = 0; i < bufferSize; i++)
+  {
+    array[i] = (char*)malloc(sizeof(char) * bufferSize);
+  }
+  
+  return array;
 }
 ```
 
@@ -88,13 +87,13 @@ Fungsi allocateArrayForDatabase untuk mengalokasikan memori untuk array string
 ```c++
 void deallocateArrayOfDatabase(char **arrayDatabase)
 {
-	int length = sizeof(arrayDatabase) / sizeof(arrayDatabase[0]);
-	
-	for (int i = 0; i < length; i++)
-	{
-		free(arrayDatabase[i]);
-	}
-	free(arrayDatabase);
+  int length = sizeof(arrayDatabase) / sizeof(arrayDatabase[0]);
+  
+  for (int i = 0; i < length; i++)
+  {
+    free(arrayDatabase[i]);
+  }
+  free(arrayDatabase);
 }
 ```
 
@@ -103,58 +102,58 @@ Fungsi deallocateArrayOfDatabase untuk mengdealokasikan memori sebuah array stri
 ```c++
 void zipGachaFile()
 {
-	if(chdir("gacha_gacha") < 0)
-	{
-		exit(EXIT_FAILURE);
-	}
-	
-	DIR *directory = opendir("./");
-	
-	if (directory == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-	
-	struct dirent *fileChecker;
-	
-	int totalFile = 0;
-	
-	while((fileChecker = readdir(directory)) != NULL)
-	{
-		if (strncmp("total_gacha_", fileChecker->d_name, 12) == 0)
-		{
-			totalFile += 1;
-		}
-	}
-	closedir(directory);
+  if(chdir("gacha_gacha") < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  DIR *directory = opendir("./");
+  
+  if (directory == NULL)
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  struct dirent *fileChecker;
+  
+  int totalFile = 0;
+  
+  while((fileChecker = readdir(directory)) != NULL)
+  {
+    if (strncmp("total_gacha_", fileChecker->d_name, 12) == 0)
+    {
+      totalFile += 1;
+    }
+  }
+  closedir(directory);
 
-	char **zipArgv = allocateArrayForDatabase(totalFile + 6, 128);
-	strcpy(zipArgv[0], "zip");
-	strcpy(zipArgv[1], "-P");
-	strcpy(zipArgv[2], "satuduatiga");
-	strcpy(zipArgv[3], "-r");
-	strcpy(zipArgv[4], "not_safe_for_wibu.zip");
-	zipArgv[totalFile + 5] = NULL;
-	
-	directory = opendir("./");
-	
-	if (directory == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-		
-	int fileIndex = 5;
-	while((fileChecker = readdir(directory)) != NULL)
-	{
-		if (strncmp("total_gacha_", fileChecker->d_name, 12) == 0)
-		{
-			strcpy(zipArgv[fileIndex], fileChecker->d_name);
-			fileIndex += 1;
-		}
-	}
-	closedir(directory);
-	
-	execv("/bin/zip", zipArgv);
+  char **zipArgv = allocateArrayForDatabase(totalFile + 6, 128);
+  strcpy(zipArgv[0], "zip");
+  strcpy(zipArgv[1], "-P");
+  strcpy(zipArgv[2], "satuduatiga");
+  strcpy(zipArgv[3], "-r");
+  strcpy(zipArgv[4], "not_safe_for_wibu.zip");
+  zipArgv[totalFile + 5] = NULL;
+  
+  directory = opendir("./");
+  
+  if (directory == NULL)
+  {
+    exit(EXIT_FAILURE);
+  }
+    
+  int fileIndex = 5;
+  while((fileChecker = readdir(directory)) != NULL)
+  {
+    if (strncmp("total_gacha_", fileChecker->d_name, 12) == 0)
+    {
+      strcpy(zipArgv[fileIndex], fileChecker->d_name);
+      fileIndex += 1;
+    }
+  }
+  closedir(directory);
+  
+  execv("/bin/zip", zipArgv);
 }
 ```
 
@@ -163,61 +162,61 @@ Fungsi zipGachaFile untuk zip semua file hasil gacha yang disimpan di dalam dire
 ```c++
 void clearGachaGachaDirectory()
 {
-	if(chdir("gacha_gacha") < 0)
-	{
-		exit(EXIT_FAILURE);
-	}
-	
-	DIR *directory = opendir("./");
-	
-	if (directory == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-	
-	struct dirent *fileChecker;
-	
-	pid_t pidRemoveDirectoryProcess = 0;
-	int status;
-	
-	while((fileChecker = readdir(directory)) != NULL)
-	{
-		if (strncmp("total_gacha_", fileChecker->d_name, 12) == 0)
-		{
-			pidRemoveDirectoryProcess = 0;
-			pidRemoveDirectoryProcess = fork();
-			
-			if (pidRemoveDirectoryProcess == 0)
-			{
-				char *removeDirectoryArgv[] = {"rm", "-rf", fileChecker->d_name, NULL};
-				execv("/bin/rm", removeDirectoryArgv);
-			}
-			else
-			{
-				while(wait(&status) > 0);
-			}
-		}
-	}
-	exit(EXIT_SUCCESS);
+  if(chdir("gacha_gacha") < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  DIR *directory = opendir("./");
+  
+  if (directory == NULL)
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  struct dirent *fileChecker;
+  
+  pid_t pidRemoveDirectoryProcess = 0;
+  int status;
+  
+  while((fileChecker = readdir(directory)) != NULL)
+  {
+    if (strncmp("total_gacha_", fileChecker->d_name, 12) == 0)
+    {
+      pidRemoveDirectoryProcess = 0;
+      pidRemoveDirectoryProcess = fork();
+      
+      if (pidRemoveDirectoryProcess == 0)
+      {
+        char *removeDirectoryArgv[] = {"rm", "-rf", fileChecker->d_name, NULL};
+        execv("/bin/rm", removeDirectoryArgv);
+      }
+      else
+      {
+        while(wait(&status) > 0);
+      }
+    }
+  }
+  exit(EXIT_SUCCESS);
 }
 ```
 
 Fungsi clearGachaGachaDirectory untuk menghapus semua file hasil gacha yang terdapat di dalam directory gacha_gacha
 
-### fungsi main ###
+### fungsi main
 
 ```c++
 pid_t pidDaemonProcess = 0, sidDaemonProcess;
-	
+  
 pidDaemonProcess = fork();
 
 if (pidDaemonProcess < 0)
 {
-	exit(EXIT_FAILURE);
+  exit(EXIT_FAILURE);
 }
 else if (pidDaemonProcess > 0)
 {
-	exit(EXIT_SUCCESS);
+  exit(EXIT_SUCCESS);
 }
 
 // masuk dalam daemon
@@ -228,7 +227,7 @@ sidDaemonProcess = setsid();
 
 if (sidDaemonProcess < 0)
 {
-	exit(EXIT_FAILURE);
+  exit(EXIT_FAILURE);
 }
 
 close(STDIN_FILENO);
@@ -240,115 +239,115 @@ Membuat daemon terlebih dahulu
 
 ```c++
 pid_t pidDownloadDatabaseCharacter = 0;
-	
+  
 pidDownloadDatabaseCharacter = fork();
 
 if (pidDownloadDatabaseCharacter < 0)
 {
-	exit(EXIT_FAILURE);
+  exit(EXIT_FAILURE);
 }
 
 if (pidDownloadDatabaseCharacter == 0)
 {
-	// process untuk mengunduh zip database weapon dan character
-	// dan kemudian mengextract zip tersebut
-	
-	pid_t pidDownloadDatabaseWeapon = 0;
-	
-	pidDownloadDatabaseWeapon  = fork();
-	
-	if (pidDownloadDatabaseWeapon < 0)
-	{
-		exit(EXIT_FAILURE);
-	}
-	
-	if (pidDownloadDatabaseWeapon == 0)
-	{
-		// mengunduh zip database character
-		// dan mengextract zip tersebut
-		
-		pid_t pidExtractFileDBWeapon = 0;
-		
-		pidExtractFileDBWeapon = fork();
-		
-		if (pidExtractFileDBWeapon < 0)
-		{
-			exit(EXIT_FAILURE);
-		}
-		
-		if (pidExtractFileDBWeapon == 0)
-		{
-			// mengunduh zip database character
-			
-			char *argvDownloadWeaponDB[] = {
-				"wget", 
-				"--no-check-certificate", 
-				"-q", 
-				"https://drive.google.com/uc?id=1XSkAqqjkNmzZ0AdIZQt_eWGOZ0eJyNlT&export=download", 
-				"-O", 
-				"db_weapon.zip", NULL
-			};
-		
-			execv("/bin/wget", argvDownloadWeaponDB);
-		}
-		else
-		{
-			// mengextract zip database character
-			
-			int statusProcessDownloadDBWeapon;
-			while(wait(&statusProcessDownloadDBWeapon) > 0);
-			
-			char *unzipWeaponDBArgv[] = {"unzip", "-q",  "db_weapon.zip", NULL};
-			execv("/bin/unzip", unzipWeaponDBArgv);
-		}
-		
-	}
-	else
-	{
-		// mengunduh zip database weapon
-		// dan kemudian mengextract zip tersebut
-	
-		int statusProcessDBWeapon;
-		while(wait(&statusProcessDBWeapon) > 0);
-		
-		pid_t pidExtractFileDBCharacter = 0;
-		
-		pidExtractFileDBCharacter = fork();
-		
-		if (pidExtractFileDBCharacter < 0)
-		{
-			exit(EXIT_FAILURE);
-		}
-		
-		if (pidExtractFileDBCharacter == 0)
-		{
-			// mengunduh zip database weapon
-			
-			char *argvDownloadCharacterDB[] = {
-				"wget", 
-				"--no-check-certificate", 
-				"-q", 
-				"https://drive.google.com/uc?id=1xYYmsslb-9s8-4BDvosym7R4EmPi6BHp&export=download", 
-				"-O", 
-				"db_character.zip", 
-				NULL
-			};
-			
-			execv("/bin/wget", argvDownloadCharacterDB);
-		}
-		else
-		{
-			// mengextract zip database weapon
-			
-			int statusProcessDownloadDBCharacter;
-			while(wait(&statusProcessDownloadDBCharacter) > 0);
-			
-			char *unzipCharacterDBArgv[] = {"unzip", "-q", "db_character.zip", NULL};
-			execv("/bin/unzip", unzipCharacterDBArgv);
-			
-		}
-		
-	}
+  // process untuk mengunduh zip database weapon dan character
+  // dan kemudian mengextract zip tersebut
+  
+  pid_t pidDownloadDatabaseWeapon = 0;
+  
+  pidDownloadDatabaseWeapon  = fork();
+  
+  if (pidDownloadDatabaseWeapon < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  if (pidDownloadDatabaseWeapon == 0)
+  {
+    // mengunduh zip database character
+    // dan mengextract zip tersebut
+    
+    pid_t pidExtractFileDBWeapon = 0;
+    
+    pidExtractFileDBWeapon = fork();
+    
+    if (pidExtractFileDBWeapon < 0)
+    {
+      exit(EXIT_FAILURE);
+    }
+    
+    if (pidExtractFileDBWeapon == 0)
+    {
+      // mengunduh zip database character
+      
+      char *argvDownloadWeaponDB[] = {
+        "wget", 
+        "--no-check-certificate", 
+        "-q", 
+        "https://drive.google.com/uc?id=1XSkAqqjkNmzZ0AdIZQt_eWGOZ0eJyNlT&export=download", 
+        "-O", 
+        "db_weapon.zip", NULL
+      };
+    
+      execv("/bin/wget", argvDownloadWeaponDB);
+    }
+    else
+    {
+      // mengextract zip database character
+      
+      int statusProcessDownloadDBWeapon;
+      while(wait(&statusProcessDownloadDBWeapon) > 0);
+      
+      char *unzipWeaponDBArgv[] = {"unzip", "-q",  "db_weapon.zip", NULL};
+      execv("/bin/unzip", unzipWeaponDBArgv);
+    }
+    
+  }
+  else
+  {
+    // mengunduh zip database weapon
+    // dan kemudian mengextract zip tersebut
+  
+    int statusProcessDBWeapon;
+    while(wait(&statusProcessDBWeapon) > 0);
+    
+    pid_t pidExtractFileDBCharacter = 0;
+    
+    pidExtractFileDBCharacter = fork();
+    
+    if (pidExtractFileDBCharacter < 0)
+    {
+      exit(EXIT_FAILURE);
+    }
+    
+    if (pidExtractFileDBCharacter == 0)
+    {
+      // mengunduh zip database weapon
+      
+      char *argvDownloadCharacterDB[] = {
+        "wget", 
+        "--no-check-certificate", 
+        "-q", 
+        "https://drive.google.com/uc?id=1xYYmsslb-9s8-4BDvosym7R4EmPi6BHp&export=download", 
+        "-O", 
+        "db_character.zip", 
+        NULL
+      };
+      
+      execv("/bin/wget", argvDownloadCharacterDB);
+    }
+    else
+    {
+      // mengextract zip database weapon
+      
+      int statusProcessDownloadDBCharacter;
+      while(wait(&statusProcessDownloadDBCharacter) > 0);
+      
+      char *unzipCharacterDBArgv[] = {"unzip", "-q", "db_character.zip", NULL};
+      execv("/bin/unzip", unzipCharacterDBArgv);
+      
+    }
+    
+  }
 }
 ```
 
@@ -366,15 +365,15 @@ pidCreateGachaDirectory = fork();
 
 if (pidCreateGachaDirectory < 0)
 {
-	exit(EXIT_FAILURE);
+  exit(EXIT_FAILURE);
 }
 
 if (pidCreateGachaDirectory == 0)
 {
-	// membuat directory gacha_gacha
-	
-	char *createGachaDirectoryArgv[] = {"mkdir", "gacha_gacha", NULL};
-	execv("/bin/mkdir", createGachaDirectoryArgv);
+  // membuat directory gacha_gacha
+  
+  char *createGachaDirectoryArgv[] = {"mkdir", "gacha_gacha", NULL};
+  execv("/bin/mkdir", createGachaDirectoryArgv);
 }
 ```
 
@@ -395,8 +394,7 @@ int currentHourSecond, prevHourSecond;
 ```
 
 Setelah membuat directory "gacha_gacha" barulah masuk pada proses gacha, karena proses gacha baru akan dimulai pada tanggal 30 Maret pukul 04:44, maka
-perlu mendapatkan waktu dari sistem dan jam, menit, dan detik dari sistem sekarang, waktu mulai, dan waktu berhenti gacha diubah menjadi satuan detik 
-untuk mempermudah perbandingan. Struct tm currentLocalTime untuk menyimpan waktu sistem dalam tahun, bulan, hari, jam, menit, dan detik 
+perlu mendapatkan waktu dari sistem dan jam, menit, dan detik dari sistem sekarang, waktu mulai, dan waktu berhenti gacha diubah menjadi satuan detik untuk mempermudah perbandingan. Struct tm currentLocalTime untuk menyimpan waktu sistem dalam tahun, bulan, hari, jam, menit, dan detik
 
 ```c++
 currentTime = time(NULL);
@@ -409,8 +407,8 @@ untuk mempermudah mengambil tahun, bulan, hari, jam, menit, dan detik sistem.
 
 ```c++
 if (
-	currentLocalTime.tm_mday == 30 && currentLocalTime.tm_mon == 2 && 
-	currentHourSecond >= startHourSecond && currentHourSecond < finishHourSecond
+  currentLocalTime.tm_mday == 30 && currentLocalTime.tm_mon == 2 && 
+  currentHourSecond >= startHourSecond && currentHourSecond < finishHourSecond
 )
 ```
 
@@ -451,7 +449,7 @@ DIR *databaseWeaponDirectory = opendir("weapons");
 
 if (databaseCharacterDirectory == NULL || databaseWeaponDirectory == NULL)
 {
-	exit(EXIT_FAILURE);
+  exit(EXIT_FAILURE);
 }
 
 int totalCharacterInDatabase = getTotalDatabase("./characters");
@@ -463,7 +461,7 @@ int randomIndex = 0;
 
 if (totalCharacterInDatabase < 1 || totalWeaponInDatabase < 1)
 {
-	exit(EXIT_FAILURE);
+  exit(EXIT_FAILURE);
 }
 
 char **databaseCharacterFileName = allocateArrayForDatabase(totalCharacterInDatabase, 256);
@@ -479,8 +477,8 @@ file database ke dalam array string.
 
 ```c++
 while(
-	currentLocalTime.tm_mday == 30 && currentLocalTime.tm_mon == 2 && 
-	currentHourSecond >= startHourSecond && currentHourSecond < finishHourSecond
+  currentLocalTime.tm_mday == 30 && currentLocalTime.tm_mon == 2 && 
+  currentHourSecond >= startHourSecond && currentHourSecond < finishHourSecond
 )
 ```
 
@@ -489,57 +487,57 @@ Selama masih di dalam rentang waktu gacha, proses akan terus menerus terjebak pa
 ```c++
 if (gachaKelipatan10 == 10)
 {
-	if (currentTime > previousTimeFileCreated)
-	{
-		
-		gachaKelipatan10 = 0;
-		previousTimeFileCreated = currentTime;
-		
-		if (jumlahGacha % 90 == 0)
-		{
-			sprintf(
-				gachaDirectoryName,
-				"gacha_gacha/total_gacha_%d",
-				jumlahGacha + 1
-			);
-			
-			pid_t pidNewDirectoryGacha = 0;
-		
-			pidNewDirectoryGacha = fork();
-			
-			if (pidNewDirectoryGacha < 0)
-			{
-				exit(EXIT_FAILURE);
-			}
-			
-			if (pidNewDirectoryGacha == 0)
-			{
-				
-				
-				char *argvCreateNewGachaDir[255] = {"mkdir", gachaDirectoryName, NULL};
-				execv("/bin/mkdir", argvCreateNewGachaDir);
-			}
-			else
-			{
-				while(wait(&status) > 0);	
-			}
-		}
-		
-		sprintf(
-			currentFileNamePrefix, 
-			"%02d:%02d:%02d_gacha_",
-			currentLocalTime.tm_hour, 
-			currentLocalTime.tm_min,
-			currentLocalTime.tm_sec 
-		);
-		
-		sprintf(
-			currentFileName, 
-			"%s%d.txt",
-			currentFileNamePrefix,
-			jumlahGacha
-		);
-	}
+  if (currentTime > previousTimeFileCreated)
+  {
+    
+    gachaKelipatan10 = 0;
+    previousTimeFileCreated = currentTime;
+    
+    if (jumlahGacha % 90 == 0)
+    {
+      sprintf(
+        gachaDirectoryName,
+        "gacha_gacha/total_gacha_%d",
+        jumlahGacha + 1
+      );
+      
+      pid_t pidNewDirectoryGacha = 0;
+    
+      pidNewDirectoryGacha = fork();
+      
+      if (pidNewDirectoryGacha < 0)
+      {
+        exit(EXIT_FAILURE);
+      }
+      
+      if (pidNewDirectoryGacha == 0)
+      {
+        
+        
+        char *argvCreateNewGachaDir[255] = {"mkdir", gachaDirectoryName, NULL};
+        execv("/bin/mkdir", argvCreateNewGachaDir);
+      }
+      else
+      {
+        while(wait(&status) > 0);  
+      }
+    }
+    
+    sprintf(
+      currentFileNamePrefix, 
+      "%02d:%02d:%02d_gacha_",
+      currentLocalTime.tm_hour, 
+      currentLocalTime.tm_min,
+      currentLocalTime.tm_sec 
+    );
+    
+    sprintf(
+      currentFileName, 
+      "%s%d.txt",
+      currentFileNamePrefix,
+      jumlahGacha
+    );
+  }
 }
 ```
 
@@ -549,178 +547,175 @@ Tetapi jika belum lewat 1 detik dari file sebelumnya yang dibuat, maka akan ditu
 ```c++
 if (primogems >= 160)
 {
-	primogems -= 160;
-	gachaKelipatan10 += 1;
-	jumlahGacha += 1;
-	
-	sprintf(
-		directoryAndFileName, 
-		"%s/%s",
-		gachaDirectoryName,
-		currentFileName
-	);
-	
-	
-	if (jumlahGacha % 2 == 0)
-	{
-		checkTotalWeaponInDatabase = getTotalDatabase("./weapons");
-		if (checkTotalWeaponInDatabase != totalWeaponInDatabase)
-		{
-			if (checkTotalWeaponInDatabase < 1)
-			{
-				exit(EXIT_FAILURE);
-			}
-			
-			totalWeaponInDatabase = checkTotalWeaponInDatabase;
-			deallocateArrayOfDatabase(databaseWeaponFileName);
-			databaseWeaponFileName = allocateArrayForDatabase(totalWeaponInDatabase, 256);
-			getFileNameInDatabase(databaseWeaponFileName, "./weapons");
-		}
-		
-		
-		randomIndex = rand() % totalWeaponInDatabase;
-		
-		sprintf(databaseJSONFileName, "weapons/%s", databaseWeaponFileName[randomIndex]);
-		
-		fileReader = fopen(databaseJSONFileName, "r");
-		fread(jsonBuffer, 4096, 1, fileReader);
-		fclose(fileReader);
-		
-		
-		parsedJSON = json_tokener_parse(jsonBuffer);
-		json_object_object_get_ex(parsedJSON, "name", &jsonDataName);
-		json_object_object_get_ex(parsedJSON, "rarity", &jsonDataRarity);
-		
-		sprintf(
-			gachaDataString, 
-			"%d_weapons_%s_%s_%d", 
-			jumlahGacha, 
-			json_object_get_string(jsonDataRarity),
-			json_object_get_string(jsonDataName),
-			primogems
-		);
-	}
-	else
-	{
-		checkTotalCharacterInDatabase = getTotalDatabase("./characters");
-		if (checkTotalCharacterInDatabase != totalCharacterInDatabase)
-		{
-			if (checkTotalCharacterInDatabase < 1)
-			{
-				exit(EXIT_FAILURE);
-			}
-			totalCharacterInDatabase = checkTotalCharacterInDatabase;
-			deallocateArrayOfDatabase(databaseCharacterFileName);
-			databaseCharacterFileName = allocateArrayForDatabase(totalCharacterInDatabase, 256);
-			getFileNameInDatabase(databaseCharacterFileName, "./characters");
-		}
-		
-		
-		randomIndex = rand() % totalCharacterInDatabase;
-		
-		sprintf(databaseJSONFileName, "characters/%s", databaseCharacterFileName[randomIndex]);
-		
-		fileReader = fopen(databaseJSONFileName, "r");
-		fread(jsonBuffer, 4096, 1, fileReader);
-		fclose(fileReader);
-		
-		
-		parsedJSON = json_tokener_parse(jsonBuffer);
-		json_object_object_get_ex(parsedJSON, "name", &jsonDataName);
-		json_object_object_get_ex(parsedJSON, "rarity", &jsonDataRarity);
-		
-		sprintf(
-			gachaDataString, 
-			"%d_characters_%s_%s_%d", 
-			jumlahGacha, 
-			json_object_get_string(jsonDataRarity),
-			json_object_get_string(jsonDataName),
-			primogems
-		);
-	}
-	
-	fileWriter = fopen(directoryAndFileName, "a");
-	
-	fprintf(fileWriter, "%s\n", gachaDataString);
-	 
-	fclose(fileWriter);
-	
-	sprintf(
-		currentFileNewName, 
-		"%s%d.txt",
-		currentFileNamePrefix,
-		jumlahGacha
-	);
-	
-	sprintf(
-		directoryAndFileNameRename, 
-		"%s/%s",
-		gachaDirectoryName,
-		currentFileNewName
-	);
-	
-	pid_t pidUpdateFileName = 0;
-	pidUpdateFileName = fork();
-	
-	if (pidUpdateFileName < 0)
-	{
-		exit(EXIT_FAILURE);
-	}
-	
-	if (pidUpdateFileName == 0)
-	{
-		char *argvRenameDir[] = {
-			"mv",
-			directoryAndFileName,
-			directoryAndFileNameRename,
-			NULL
-		};
-		
-		execv("/bin/mv", argvRenameDir);
-	}
-	else
-	{
-		while(wait(&status) > 0);
-		strcpy(currentFileName, currentFileNewName);
-		
-		sprintf(
-			gachaDirectoryNewName,
-			"gacha_gacha/total_gacha_%d",
-			jumlahGacha
-		);
-		
-		pidUpdateFileName = 0;
-		pidUpdateFileName = fork();
-		
-		if (pidUpdateFileName < 0)
-		{
-			exit(EXIT_FAILURE);
-		}
-		
-		if (pidUpdateFileName == 0)
-		{
-			char *argvRenameDir[] = {
-				"mv",
-				gachaDirectoryName,
-				gachaDirectoryNewName,
-				NULL
-			};
-			
-			execv("/bin/mv", argvRenameDir);
-		}
-		else
-		{
-			while(wait(&status) > 0);
-			strcpy(gachaDirectoryName, gachaDirectoryNewName);
-		}
-	}
+  primogems -= 160;
+  gachaKelipatan10 += 1;
+  jumlahGacha += 1;
+  
+  sprintf(
+    directoryAndFileName, 
+    "%s/%s",
+    gachaDirectoryName,
+    currentFileName
+  );
+  
+  
+  if (jumlahGacha % 2 == 0)
+  {
+    checkTotalWeaponInDatabase = getTotalDatabase("./weapons");
+    if (checkTotalWeaponInDatabase != totalWeaponInDatabase)
+    {
+      if (checkTotalWeaponInDatabase < 1)
+      {
+        exit(EXIT_FAILURE);
+      }
+      
+      totalWeaponInDatabase = checkTotalWeaponInDatabase;
+      deallocateArrayOfDatabase(databaseWeaponFileName);
+      databaseWeaponFileName = allocateArrayForDatabase(totalWeaponInDatabase, 256);
+      getFileNameInDatabase(databaseWeaponFileName, "./weapons");
+    }
+    
+    
+    randomIndex = rand() % totalWeaponInDatabase;
+    
+    sprintf(databaseJSONFileName, "weapons/%s", databaseWeaponFileName[randomIndex]);
+    
+    fileReader = fopen(databaseJSONFileName, "r");
+    fread(jsonBuffer, 4096, 1, fileReader);
+    fclose(fileReader);
+    
+    
+    parsedJSON = json_tokener_parse(jsonBuffer);
+    json_object_object_get_ex(parsedJSON, "name", &jsonDataName);
+    json_object_object_get_ex(parsedJSON, "rarity", &jsonDataRarity);
+    
+    sprintf(
+      gachaDataString, 
+      "%d_weapons_%s_%s_%d", 
+      jumlahGacha, 
+      json_object_get_string(jsonDataRarity),
+      json_object_get_string(jsonDataName),
+      primogems
+    );
+  }
+  else
+  {
+    checkTotalCharacterInDatabase = getTotalDatabase("./characters");
+    if (checkTotalCharacterInDatabase != totalCharacterInDatabase)
+    {
+      if (checkTotalCharacterInDatabase < 1)
+      {
+        exit(EXIT_FAILURE);
+      }
+      totalCharacterInDatabase = checkTotalCharacterInDatabase;
+      deallocateArrayOfDatabase(databaseCharacterFileName);
+      databaseCharacterFileName = allocateArrayForDatabase(totalCharacterInDatabase, 256);
+      getFileNameInDatabase(databaseCharacterFileName, "./characters");
+    }
+    
+    
+    randomIndex = rand() % totalCharacterInDatabase;
+    
+    sprintf(databaseJSONFileName, "characters/%s", databaseCharacterFileName[randomIndex]);
+    
+    fileReader = fopen(databaseJSONFileName, "r");
+    fread(jsonBuffer, 4096, 1, fileReader);
+    fclose(fileReader);
+    
+    
+    parsedJSON = json_tokener_parse(jsonBuffer);
+    json_object_object_get_ex(parsedJSON, "name", &jsonDataName);
+    json_object_object_get_ex(parsedJSON, "rarity", &jsonDataRarity);
+    
+    sprintf(
+      gachaDataString, 
+      "%d_characters_%s_%s_%d", 
+      jumlahGacha, 
+      json_object_get_string(jsonDataRarity),
+      json_object_get_string(jsonDataName),
+      primogems
+    );
+  }
+  
+  fileWriter = fopen(directoryAndFileName, "a");
+  
+  fprintf(fileWriter, "%s\n", gachaDataString);
+   
+  fclose(fileWriter);
+  
+  sprintf(
+    currentFileNewName, 
+    "%s%d.txt",
+    currentFileNamePrefix,
+    jumlahGacha
+  );
+  
+  sprintf(
+    directoryAndFileNameRename, 
+    "%s/%s",
+    gachaDirectoryName,
+    currentFileNewName
+  );
+  
+  pid_t pidUpdateFileName = 0;
+  pidUpdateFileName = fork();
+  
+  if (pidUpdateFileName < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  if (pidUpdateFileName == 0)
+  {
+    char *argvRenameDir[] = {
+      "mv",
+      directoryAndFileName,
+      directoryAndFileNameRename,
+      NULL
+    };
+    
+    execv("/bin/mv", argvRenameDir);
+  }
+  else
+  {
+    while(wait(&status) > 0);
+    strcpy(currentFileName, currentFileNewName);
+    
+    sprintf(
+      gachaDirectoryNewName,
+      "gacha_gacha/total_gacha_%d",
+      jumlahGacha
+    );
+    
+    pidUpdateFileName = 0;
+    pidUpdateFileName = fork();
+    
+    if (pidUpdateFileName < 0)
+    {
+      exit(EXIT_FAILURE);
+    }
+    
+    if (pidUpdateFileName == 0)
+    {
+      char *argvRenameDir[] = {
+        "mv",
+        gachaDirectoryName,
+        gachaDirectoryNewName,
+        NULL
+      };
+      
+      execv("/bin/mv", argvRenameDir);
+    }
+    else
+    {
+      while(wait(&status) > 0);
+      strcpy(gachaDirectoryName, gachaDirectoryNewName);
+    }
+  }
 }
 ```
 
-Tetapi jika total gacha bukan kelipatan 10, maka akan dilakukan pengacakan gacha. Pertama-tama dengan mengecek perubahan jumlah file pada database 
-dan bila terjadi perubahan jumlah akan dilakukan perbaruan jumlah database dan array string yang menyimpan nama file database sehingga
-bila ada file yang hilang atau bertambah file baru saat proses sedang berjalan tidak akan merusak sistem gacha. Bila ada file yang mengalami perubahan
-nama tetapi jumlah file tidak berubah akan merusak sistem gacha.
+Tetapi jika total gacha bukan kelipatan 10, maka akan dilakukan pengacakan gacha. Pertama-tama dengan mengecek perubahan jumlah file pada database dan bila terjadi perubahan jumlah akan dilakukan perbaruan jumlah database dan array string yang menyimpan nama file database sehingga bila ada file yang hilang atau bertambah file baru saat proses sedang berjalan tidak akan merusak sistem gacha. Bila ada file yang mengalami perubahan nama tetapi jumlah file tidak berubah akan merusak sistem gacha.
 
 Kemudian file database yang diacak akan dibuka dan disimpan datanya ke dalam file gacha, kemudian file gacha dan directory gacha akan diperbarui
 namanya.
@@ -740,23 +735,23 @@ pidZIPProcess = fork();
 
 if (pidZIPProcess == 0)
 {
-	zipGachaFile();
+  zipGachaFile();
 }
 else
 {
-	while(wait(&status) > 0);
-	
-	pid_t pidDeleteGachaGacha = 0;
-	pidDeleteGachaGacha = fork();
-	
-	if (pidDeleteGachaGacha == 0)
-	{
-		clearGachaGachaDirectory();
-	}
-	else
-	{
-		while(wait(&status) > 0);
-	}
+  while(wait(&status) > 0);
+  
+  pid_t pidDeleteGachaGacha = 0;
+  pidDeleteGachaGacha = fork();
+  
+  if (pidDeleteGachaGacha == 0)
+  {
+    clearGachaGachaDirectory();
+  }
+  else
+  {
+    while(wait(&status) > 0);
+  }
 }
 ```
 
@@ -776,7 +771,7 @@ Rintangan yang dihadapi adalah cara mengunduh file dari Google Drive menggunakan
 
 ## Nomor 2
 
-Soal nomor 2 terkait poster drama korea. 
+Soal nomor 2 terkait poster drama korea.
 
 - Seperti program C pada umumnya, di awal program terdapat library-library yang digunakan.
 - Terdapat `struct Drakor` yang berisi nama file, judul drakor, tahun rilis, kategori, dan `boolean max`.
@@ -809,9 +804,10 @@ void move_to_folder(struct Drakor drakor, bool is_first);
 ...
 ```
 
-1. Masuk ke soal 2a, diminta untuk meng-*extract* isi file zip ke folder “/home/[user]/shift2/drakor”, tetapi yang diperlukan saja. 
+1. Masuk ke soal 2a, diminta untuk meng-*extract* isi file zip ke folder “/home/[user]/shift2/drakor”, tetapi yang diperlukan saja.
+
 - Melakukan `fork()` *process*, kemudian karena akan terdapat 2 *process*, maka dilakukan `fork()` lagi. Sehingga untuk *child process* adalah membuat folder, dan *parent process* adalah meng-*extract* zip.
-- Extract zip untuk file saja dengan meng-*exclude* folder yang ada di dalam file zip menggunakan argumen `-x */*`. 
+- Extract zip untuk file saja dengan meng-*exclude* folder yang ada di dalam file zip menggunakan argumen `-x */*`.
 
 ```c++
 ...
@@ -832,8 +828,10 @@ if (child_id_1 == 0) {
 ```
 
 2. Kami menggabungkan soal 2b, 2c, 2d, 2e menjadi satu fungsi penyelesaian menggunakan data struct.
+
 - Karena *child process* digunakan untuk `mkdir` dan `unzip`, maka kembali ke *parent process* untuk mengkategorikan file.
 - Pertama, dilakukan listing folder.
+
 ```c++
 ...
   else {
@@ -853,7 +851,9 @@ if (child_id_1 == 0) {
     }
 ...
 ```
+
 - Kemudian dilakukan pemisahan string berdasarkan '_' dan ';' untuk mendapatkan data-data sesuai pada `struct Drakor`. Hal ini bertujuan untuk mempermudah pengkategorian nantinya.
+
 ```c++
 ...
     for (int i = 0; i < count; ++i) {
@@ -900,7 +900,9 @@ if (child_id_1 == 0) {
     }
 ...
 ```
+
 - Karena juga diminta untuk membuat file `data.txt` yang berisi kategori, nama drakor, dan tahun rilis, serta harus diurutkan berdasarkan tahun rilis, maka dilakukan sorting struct menggunakan fungsi `qsort` pada C.
+
 ```c++
 ...
   bool is_first = false;
@@ -919,7 +921,9 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
 }
 ...
 ```
+
 - Setelah itu baru semua struct diproses untuk dipindahkan ke folder masing-masing sekaligus dibuat file `data.txt`.
+
 ```c++
 ...
     for (int i = 0; i < title_count; ++i) {
@@ -930,7 +934,9 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
     }
 ...
 ```
-- Pada fungsi `move_to_folder`, dilakukan `fork()` *process*. Pada *child process*, dibuat folder berdasarkan kategori drakor. 
+
+- Pada fungsi `move_to_folder`, dilakukan `fork()` *process*. Pada *child process*, dibuat folder berdasarkan kategori drakor.
+
 ```c++
 ...
   if (child_id_1 == 0) {
@@ -939,7 +945,9 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
   }
 ... 
 ```
+
 - Kemudian pada *parent process*, dibuat file `data.txt` jika belum ada, namun jika sudah ada maka data akan di-*append* ke file tersebut.
+
 ```c++
 ...
     fileptr = fopen(path_txt, "a");
@@ -950,7 +958,9 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
     fclose(fileptr);
 ...
 ```
+
 - Dilakukan `fork()` kembali pada *parent process* untuk memindahkan atau menyalin poster drakor ke dalam folder kategori yang sesuai.
+
 ```c++
 ...
     if (child_id_2 == 0) {
@@ -977,6 +987,7 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
 Rintangan yang sempat dihadapi adalah ketidaktelitian dalam membaca soal, sehingga menimbulkan kesalahpahaman saat memisahkan string. Selain itu, kami juga belum begitu memahami fungsi `strtok` sehingga dalam memisahkan string dilakukan looping karakter satu per satu. Rintangan selanjutnya adalah dalam mengurutkan tahun rilis pada file `data.txt`, sehingga kami menggunakan fungsi `qsort` dari bahasa C. Serta sempat mengalami kebingungan saat menambahkan kategori yang diletakkan paling atas pada file `data.txt`. Solusi kami untuk mengatasi semua permasalahan tersebut adalah membuat struct dari setiap judul drakor dengan atribut-atribut yang diperlukan.
 
 ## Nomor 3
+
 Soal nomer 3 terkait dengan hewan-hewan di kebun binatang
 
 - Seperti program C pada umumnya, di awal program terdapat library-library yang digunakan.
@@ -1011,7 +1022,9 @@ void move_or_remove(struct Animal animal, bool max);
 void to_list(struct Animal animal);
 ...
 ```
+
 1. Masuk ke dalam soal 3a, diminta membuat program untuk membuat 2 directory di `/home/[USER]/modul2` dengan nama `darat` lalu 3 detik kemudian membuat directory ke-2 dengan nama `air`
+
 - Melakukan `fork()` *process*, kemudian karena akan terdapat 2 *process*, maka dilakukan `fork()` lagi. Sehingga untuk *child process* adalah membuat direktori.
 
 ```C++
@@ -1034,9 +1047,12 @@ child_id_1 = fork();
   }
   ...
   ```
- 2. Masuk ke dalam soal 3b, program diminta untuk melakukan extract pada `animal.zip`
-  - Membuat `fork()` *process* untuk melakukan extract file `animal.zip`
-  ```C++
+
+2.Masuk ke dalam soal 3b, program diminta untuk melakukan extract pada `animal.zip`
+
+- Membuat `fork()` *process* untuk melakukan extract file `animal.zip`
+
+```C++
   ...
   else {
     while ((wait(&status1)) > 0);
@@ -1048,10 +1064,13 @@ child_id_1 = fork();
       execv("/usr/bin/unzip", argv);
     }
     ...
-    ```
+```
+
 3. Masuk ke dalam soal 3c, setelah file di extract hasil extract dipisah menjadi hewan `darat` dan `air`. Dilakukan pengelompokkan hewan berdasarkan habitatnya, dimana untuk hewan darat akan masuk ke dalam filepath `darat` dan untuk hewan air akan masuk ke dalam filepath `air`. Rentang pembuatan filepath antara filepath `darat` dengan filepath `air` adalah 3 detik dimana filepath `darat` dibuat terlebih dahulu.
+
 - Melakukan pemisahan data dari hasil extract dengan menggunakan `underscore` dan `titik`, untuk memfilter data berdasarkan habitatnya yaitu `air` atau `darat`.
-- Melakukan penghapusan hewan yang tidak termasuk dalam hewan `darat` dan hewan `air`
+- Melakukan penghapusan hewan yang tidak termasuk dalam hewan `darat` dan hewan `air`.
+
 ```C++
 ...
   for (int i = 0; i < count; ++i) {
@@ -1082,10 +1101,13 @@ child_id_1 = fork();
           }
         }
   ...
-  ```
+```
+
 4. Masuk ke dalam soal 3d, setelah berhasil memisahkan hewan `darat` dan hewan `air`. Kemudian akan
 melakukan penghapusan hewan `is_bird` pada direktori `darat` karena jumlahnya yang terlalu banyak.
+
 - Menggunakan fungsi `move-or_remove` untuk memindahkan file dan menghapus file yang tidak dibutuhkan.
+
 ```C++
 ...
 void move_or_remove(struct Animal animal, bool max) {
@@ -1123,18 +1145,23 @@ void move_or_remove(struct Animal animal, bool max) {
       to_list(animal);
     }
   ...
-  ```
-  - Melakukan penghapusan pada file animal
-  ```
+```
+
+- Melakukan penghapusan pada file animal.
+
+```C++
   if (max) {
       char *argv[] = {"rm", "-rf", path_extract, NULL};
       execv("/bin/rm", argv);
     }
     return;
   }
-  ```
-5. Masuk ke dalam soal 3e, program diminta untuk membuat `list.txt` pada folder `/home/[USER]/modul2/air` dan membuat list nama semua hewan yang ada pada direktori `/home/[USER]/modul2/air` ke dalam `list.txt`
-- Menggunakan fungsi `to_list` untuk membuat list hewan hewan
+```
+
+5. Masuk ke dalam soal 3e, program diminta untuk membuat `list.txt` pada folder `/home/[USER]/modul2/air` dan membuat list nama semua hewan yang ada pada direktori `/home/[USER]/modul2/air` ke dalam `list.txt`.
+
+- Menggunakan fungsi `to_list` untuk membuat list hewan hewan.
+
 ```C++
 ...
 void to_list(struct Animal animal) {
@@ -1168,9 +1195,11 @@ void to_list(struct Animal animal) {
     exit(1);
   }
   ...
-  ```
-  - Membuat akses untuk UID File Permission
-  ```c++
+```
+
+- Membuat akses untuk UID File Permission.
+
+```c++
   struct passwd *pw = getpwuid(info.st_uid);
 
   char text[100];
@@ -1186,10 +1215,10 @@ void to_list(struct Animal animal) {
 
   fclose(fileptr);
 ```
+
 **Dokumentasi Pengerjaan dan Rintangan**
 
 ![pengerjaan_3_1](/uploads/ebb064203777579988933d465bbd7e29/pengerjaan_3_1.png)
 ![pengerjaan_3_2](/uploads/5884e18794f79ab519fe29fd4df25483/pengerjaan_3_2.png)
-
 
 Rintangan yang sempat kami hadapi adalah kebingungan dalam membaca pola nama file untuk mengidentifikasi nama hewan serta habitat dan jenisnya. Pada akhirnya kami melakukan looping karakter satu per satu kemudian menyimpan nama file, habitat, dan apakah hewan tersebut termasuk burung atau bukan ke dalam struct. Rintangan selanjutnya adalah ketika kami masih belum terlalu memahami dalam mengakses UID dan jenis akses dari user. Kemudian kami membaca kembali modul 2 dan menemukan penjelasan terkait file ownership dan file permission.

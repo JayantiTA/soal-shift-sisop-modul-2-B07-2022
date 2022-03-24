@@ -766,11 +766,11 @@ waktu sistem memenuhi rentang waktu proses gacha.
 
 **Dokumentasi Pengerjaan dan Rintangan**
 
-![dokumentasi_nomor_1_1](images/pengerjaan 1.png)
-![dokumentasi_nomor_1_2](images/pengerjaan 4.png)
-![dokumentasi_nomor_1_3](images/pengerjaan 7.png)
-![dokumentasi_nomor_1_4](images/pengerjaan 10.png)
-![dokumentasi_nomor_1_5](images/pengerjaan 11.png)
+![pengerjaan_1](/uploads/2ff259a4acc149e4d5d3a72463fd08da/pengerjaan_1.png)
+![pengerjaan_4](/uploads/c84fd4fb20f2c5307b5fa741e122306b/pengerjaan_4.png)
+![pengerjaan_7](/uploads/0a0937bb6cd0a8a74fbac61a711117e6/pengerjaan_7.png)
+![pengerjaan_10](/uploads/28de061f3cd25b2bd4e8908313147590/pengerjaan_10.png)
+![pengerjaan_11](/uploads/921d974931f817dfbacd5801d536e765/pengerjaan_11.png)
 
 Rintangan yang dihadapi adalah cara mengunduh file dari Google Drive menggunakan wget, kemudian cara mengganti nama file dan folder gacha setiap kali terjadi penambahan gacha, kemudian zip folder-folder gacha, juga terjadi process leak karena proses menghapus folder-folder gacha namun semua rintangan berhasil diselesaikan.
 
@@ -971,8 +971,8 @@ int compare_by_category(const void *drakor1, const void *drakor2) {
 
 **Dokumentasi Pengerjaan dan Rintangan**
 
-![dokumentasi_nomor_2_1](images/pengerjaan_2_1.png)
-![dokumentasi_nomor_2_2](images/pengerjaan_2_2.png)
+![pengerjaan_2_1](/uploads/59922a1e0fddb854cc8f3473d62ce236/pengerjaan_2_1.png)
+![pengerjaan_2_2](/uploads/2a6d340159d76940732ee0a42882622b/pengerjaan_2_2.png)
 
 Rintangan yang sempat dihadapi adalah ketidaktelitian dalam membaca soal, sehingga menimbulkan kesalahpahaman saat memisahkan string. Selain itu, kami juga belum begitu memahami fungsi `strtok` sehingga dalam memisahkan string dilakukan looping karakter satu per satu. Rintangan selanjutnya adalah dalam mengurutkan tahun rilis pada file `data.txt`, sehingga kami menggunakan fungsi `qsort` dari bahasa C. Serta sempat mengalami kebingungan saat menambahkan kategori yang diletakkan paling atas pada file `data.txt`. Solusi kami untuk mengatasi semua permasalahan tersebut adalah membuat struct dari setiap judul drakor dengan atribut-atribut yang diperlukan.
 
@@ -1188,8 +1188,8 @@ void to_list(struct Animal animal) {
 ```
 **Dokumentasi Pengerjaan dan Rintangan**
 
-![dokumentasi_nomor_3_1](images/pengerjaan_3_1.png)
-![dokumentasi_nomor_3_1](images/pengerjaan_3_2.png)
+![pengerjaan_3_1](/uploads/ebb064203777579988933d465bbd7e29/pengerjaan_3_1.png)
+![pengerjaan_3_2](/uploads/5884e18794f79ab519fe29fd4df25483/pengerjaan_3_2.png)
 
 
 Rintangan yang sempat kami hadapi adalah kebingungan dalam membaca pola nama file untuk mengidentifikasi nama hewan serta habitat dan jenisnya. Pada akhirnya kami melakukan looping karakter satu per satu kemudian menyimpan nama file, habitat, dan apakah hewan tersebut termasuk burung atau bukan ke dalam struct. Rintangan selanjutnya adalah ketika kami masih belum terlalu memahami dalam mengakses UID dan jenis akses dari user. Kemudian kami membaca kembali modul 2 dan menemukan penjelasan terkait file ownership dan file permission.

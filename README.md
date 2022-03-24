@@ -994,7 +994,7 @@ Soal nomer 3 terkait dengan hewan-hewan di kebun binatang
 - Terdapat `struct Animal` yang berisi nama file, habitat, dan `boolean is_bird`.
 - Terdapat juga variabel global untuk menyimpan path folder dan file zip, serta deklarasi fungsi yang akan digunakan.
 
-```C++
+```c++
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -1027,7 +1027,7 @@ void to_list(struct Animal animal);
 
 - Melakukan `fork()` *process*, kemudian karena akan terdapat 2 *process*, maka dilakukan `fork()` lagi. Sehingga untuk *child process* adalah membuat direktori.
 
-```C++
+```c++
 ...
 child_id_1 = fork();
 
@@ -1052,7 +1052,7 @@ child_id_1 = fork();
 
 - Membuat `fork()` *process* untuk melakukan extract file `animal.zip`
 
-```C++
+```c++
   ...
   else {
     while ((wait(&status1)) > 0);
@@ -1071,7 +1071,7 @@ child_id_1 = fork();
 - Melakukan pemisahan data dari hasil extract dengan menggunakan `underscore` dan `titik`, untuk memfilter data berdasarkan habitatnya yaitu `air` atau `darat`.
 - Melakukan penghapusan hewan yang tidak termasuk dalam hewan `darat` dan hewan `air`.
 
-```C++
+```c++
 ...
   for (int i = 0; i < count; ++i) {
         int underscore = 0;
@@ -1108,7 +1108,7 @@ melakukan penghapusan hewan `is_bird` pada direktori `darat` karena jumlahnya ya
 
 - Menggunakan fungsi `move-or_remove` untuk memindahkan file dan menghapus file yang tidak dibutuhkan.
 
-```C++
+```c++
 ...
 void move_or_remove(struct Animal animal, bool max) {
   char newpath[100];
@@ -1149,7 +1149,7 @@ void move_or_remove(struct Animal animal, bool max) {
 
 - Melakukan penghapusan pada file animal.
 
-```C++
+```c++
   if (max) {
       char *argv[] = {"rm", "-rf", path_extract, NULL};
       execv("/bin/rm", argv);
@@ -1162,7 +1162,7 @@ void move_or_remove(struct Animal animal, bool max) {
 
 - Menggunakan fungsi `to_list` untuk membuat list hewan hewan.
 
-```C++
+```c++
 ...
 void to_list(struct Animal animal) {
   char filename[100];
